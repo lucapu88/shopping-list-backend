@@ -11,7 +11,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: ['https://shopping-list-lc.netlify.app', 'http://localhost:5173'],
     methods: ['POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type'],
     credentials: true
@@ -26,12 +26,16 @@ const recipeSchema = z.object({
     difficoltà: z.string().describe("Un livello di difficoltà tra 'facile', 'media', 'difficile'.")
 });
 
-
-const apiKey = process.env.API_KEY;
+/*  Questa procedura è la procedura classica, ovvero quella che usa la variabile d'ambiente presa da un file .env.
+    L'ho messa e commentata per far vedere che le cose le so fare e non le faccio alla carlona.
+    Tuttavia non voglio che qualsiasi pinco pallo che vede il mio codice possa usare la mia API key,
+    Perciò ho implementato un sistema, seppur bruttino, che prevede che la API key venga passata dal frontend salvandola in localStorage.
+*/
+//const apiKey = process.env.API_KEY;
 
 app.post('/generate-recipe', async (req, res) => {
     try {
-        const { ingredients } = req.body;
+        const { ingredients, apiKey } = req.body;
 
         if (!apiKey) {
             return res.status(400).json({ error: 'Chiave API non fornita.' });
