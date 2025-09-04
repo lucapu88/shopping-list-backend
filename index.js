@@ -4,6 +4,9 @@ import cors from 'cors';
 import { ChatOpenAI } from '@langchain/openai';
 import { z } from 'zod';
 import { PromptTemplate } from '@langchain/core/prompts';
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
@@ -23,7 +26,7 @@ const recipeSchema = z.object({
     difficoltà: z.string().describe("Un livello di difficoltà tra 'facile', 'media', 'difficile'.")
 });
 
-require('dotenv').config();
+
 const apiKey = process.env.API_KEY;
 
 app.post('/generate-recipe', async (req, res) => {
