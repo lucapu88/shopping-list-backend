@@ -1,0 +1,20 @@
+{
+	"name": "recepies-generator",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"@langchain/core": "^0.3.73",
+		"@langchain/langgraph": "^0.4.9",
+		"@langchain/openai": "^0.6.11",
+		"cors": "^2.8.5",
+		"express": "^5.1.0",
+		"langchain": "^0.3.32",
+		"vue3-smooth-dnd": "^0.0.6",
+		"zod": "^3.25.76"
+	}
+}
