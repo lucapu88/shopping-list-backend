@@ -31,27 +31,7 @@ Obiettivo
 
 Inventario:
 
-    sushi 
-    gelato 
-    biscotti 
-    torta 
-    cioccolata 
-    cocktail 
-    pasta 
-    insalata 
-    frittata 
-    uovo 
-    toast 
-    panino 
-    pizza 
-    carne 
-    pollo 
-    formaggio 
-    vegetali 
-    pesce 
-    crostacei 
-    molluschi 
-    default 
+    ${icons.map(icon => icon.name).join(', ')}
 
 Regole di decisione (in quest’ordine)
 

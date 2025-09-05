@@ -37,6 +37,12 @@ const recipeSchema = z.object({
 //const apiKey = process.env.API_KEY;
 
 app.post('/generate-recipe', async (req, res) => {
+    /* IDEE FUTURE:
+        - gestione delle lingue: la mia app nel frontend ha oltre italiano anche inglese e spagnolo.
+        - come spunto si potrebbe inserire un input successivo dove l'agente chiede se deve usare per forza tutti gli ingreedienti o meno.
+        - magari si aggiunge la possibilità di scegliere quali ingredienti usare.
+        - si potrebbe aggiungere una richiesta dell'agente, in caso di poca roba in lista, se può improvvisare aggiungendo altro.
+    */
     try {
         const { ingredients, apiKey } = req.body;
 
@@ -44,6 +50,7 @@ app.post('/generate-recipe', async (req, res) => {
             return res.status(400).json({ error: 'Chiave API non fornita.' });
         }
 
+        // PRIMO AGENTE: CREA LA RICETTA
         const llm = new ChatOpenAI({
             model: "gpt-4o",
             temperature: 0.5,
@@ -71,12 +78,13 @@ app.post('/generate-recipe', async (req, res) => {
         5. NON includere il JSON in un blocco di codice. Restituisci SOLO ed ESCLUSIVAMENTE il JSON.
         `;
 
-        const prompt = PromptTemplate.fromTemplate(promptTemplate);
+        const prompt = PromptTemplate.fromTemplate(promptTemplate); //crea un "modello" di prompt a partire dalla tua stringa promptTemplate
 
-        const chain = prompt.pipe(llm);
+        const chain = prompt.pipe(llm); // collega il prompt appena creato al modello di linguaggio (LLM). Il metodo .pipe() crea una "catena" (chain) che dice: "prendi l'input, passalo al prompt, e il risultato di quel prompt passalo all'LLM".
 
-        const recipe = await chain.invoke({ ingredients });
+        const recipe = await chain.invoke({ ingredients }); // Esegui la catena con gli ingredienti forniti. Il metodo .invoke() avvia il processo, passando gli ingredienti al prompt, che poi li elabora e li invia all'LLM per generare la ricetta.
 
+        // SECONDO AGENTE: SCEGLI L'ICONA
         const llmEmoji = new ChatOpenAI({
             model: "gpt-4o",
             temperature: 0.1,
@@ -86,7 +94,7 @@ app.post('/generate-recipe', async (req, res) => {
 
         const emojiResponse = await llmEmoji.invoke(searchIconPrompt(JSON.stringify(recipe)));
 
-        const parserEmoji = new JsonOutputParser();
+        const parserEmoji = new JsonOutputParser(); // Crea un parser per estrarre il JSON dalla risposta dell'LLM
         const emojiNameResult = await parserEmoji.invoke(emojiResponse.content);
         const iconsArray = icons;
         const selectedIcon = iconsArray.find(icon => icon.name === emojiNameResult.name);
