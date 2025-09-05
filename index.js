@@ -4,6 +4,8 @@ import cors from 'cors';
 import { ChatOpenAI } from '@langchain/openai';
 import { z } from 'zod';
 import { PromptTemplate } from '@langchain/core/prompts';
+import { JsonOutputParser } from '@langchain/core/output_parsers';
+import { searchIconPrompt, icons } from './variables.js';
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -23,7 +25,8 @@ const recipeSchema = z.object({
     ingredienti: z.array(z.string()).describe("Una lista di tutti gli ingredienti usati nella ricetta."),
     preparazione: z.string().describe("Una descrizione dettagliata dei passaggi per preparare la ricetta."),
     tempo: z.string().describe("Il tempo totale stimato per preparare la ricetta (es. '30 minuti')."),
-    difficoltà: z.string().describe("Un livello di difficoltà tra 'facile', 'media', 'difficile'.")
+    difficoltà: z.string().describe("Un livello di difficoltà tra 'facile', 'media', 'difficile'."),
+    emojy: z.number().describe("Il codice esadecimale dell'emoji che rappresenta la ricetta.")
 });
 
 /*  Questa procedura è la procedura classica, ovvero quella che usa la variabile d'ambiente presa da un file .env.
@@ -63,7 +66,9 @@ app.post('/generate-recipe', async (req, res) => {
 
         3. Il tuo unico compito è restituire la ricetta richiesta in formato JSON, senza aggiungere altro testo o spiegazioni. 
 
-        4. NON includere il JSON in un blocco di codice. Restituisci SOLO ed ESCLUSIVAMENTE il JSON.
+        4. Salta il campo "emojy" per ora, lo compilerai in un secondo momento.
+
+        5. NON includere il JSON in un blocco di codice. Restituisci SOLO ed ESCLUSIVAMENTE il JSON.
         `;
 
         const prompt = PromptTemplate.fromTemplate(promptTemplate);
@@ -71,6 +76,22 @@ app.post('/generate-recipe', async (req, res) => {
         const chain = prompt.pipe(llm);
 
         const recipe = await chain.invoke({ ingredients });
+
+        const llmEmoji = new ChatOpenAI({
+            model: "gpt-4o",
+            temperature: 0.1,
+            apiKey: apiKey,
+            modelKwargs: { response_format: { type: "json_object" } }
+        });
+
+        const emojiResponse = await llmEmoji.invoke(searchIconPrompt(JSON.stringify(recipe)));
+
+        const parserEmoji = new JsonOutputParser();
+        const emojiNameResult = await parserEmoji.invoke(emojiResponse.content);
+        const iconsArray = icons;
+        const selectedIcon = iconsArray.find(icon => icon.name === emojiNameResult.name);
+
+        recipe.emojy = selectedIcon ? selectedIcon.emojyCode : 0x1f37d;
 
         console.log("Generated Recipe:", recipe);
         res.json(recipe);
