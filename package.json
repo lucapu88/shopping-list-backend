@@ -1,14 +1,12 @@
 {
-	"name": "recipes-generator",
-	"version": "1.0.0",
+	"name": "recepies-generator",
+	"version": "2.0.0",
 	"description": "",
 	"type": "module",
-	"main": "index.js",
-	"engines": {
-		"node": ">=18.0.0"
-	},
+	"main": "src/server.js",
 	"scripts": {
-		"start": "node index.js"
+		"start": "node src/server.js",
+		"dev": "nodemon src/server.js"
 	},
 	"license": "MIT",
 	"dependencies": {
@@ -20,5 +18,8 @@
 		"langchain": "^0.3.32",
 		"zod": "^3.25.76",
 		"dotenv": "^16.0.0"
+	},
+	"devDependencies": {
+		"nodemon": "^3.0.0"
 	}
 }
