@@ -14,6 +14,9 @@ A partire dagli elementi presenti nella lista della spesa, l’agente:
 
 La ricetta viene restituita in formato **JSON**, pronta per essere utilizzata da un altro progetto front-end.
 
+- LLM utilizzato: [openai](https://platform.openai.com/)
+- Libreria utilizzata: [langgraph](https://langchain-ai.github.io/langgraphjs/)
+
 ## Funzionalità extra
 
 Per puro divertimento ho aggiunto un secondo agente che:
