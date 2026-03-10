@@ -13,8 +13,8 @@ export class RecipeService {
         }).withStructuredOutput(recipeSchema);
     }
 
-    async generateRecipe(ingredients) {
-        const promptTemplate = createRecipePrompt(ingredients);
+    async generateRecipe(ingredients, language) {
+        const promptTemplate = createRecipePrompt(ingredients, language);
 
         const prompt = PromptTemplate.fromTemplate(promptTemplate); //crea un "modello" di prompt a partire dalla tua stringa promptTemplate
 

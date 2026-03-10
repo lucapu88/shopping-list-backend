@@ -1,6 +1,6 @@
 import { icons } from "../utils/icons.js";
 
-export const createRecipePrompt = (ingredients) => `
+export const createRecipePrompt = (ingredients, language) => `
             Sei uno chef professionista.
 
         Il tuo compito è creare una ricetta seguendo queste regole strettissime:
@@ -19,6 +19,8 @@ export const createRecipePrompt = (ingredients) => `
         4. Salta il campo "emoji" per ora, lo compilerai in un secondo momento.
 
         5. NON includere il JSON in un blocco di codice. Restituisci SOLO ed ESCLUSIVAMENTE il JSON.
+
+        6. Traduci il tutto nella lingua ricevuta: ${language}.
         `;
 
 export const searchIconPrompt = (recipe) => ` 

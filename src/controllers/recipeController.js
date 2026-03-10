@@ -3,7 +3,7 @@ import { IconService } from '../services/iconService.js';
 
 export const generateRecipe = async (req, res) => {
     try {
-        const { ingredients } = req.body;
+        const { ingredients, language } = req.body;
         const apiKey = process.env.API_KEY;
 
         if (!apiKey) {
@@ -12,7 +12,7 @@ export const generateRecipe = async (req, res) => {
 
         // PRIMO AGENTE: CREA LA RICETTA
         const recipeService = new RecipeService(apiKey);
-        const recipe = await recipeService.generateRecipe(ingredients);
+        const recipe = await recipeService.generateRecipe(ingredients, language);
 
         // SECONDO AGENTE: SCEGLI L'ICONA
         const iconService = new IconService(apiKey);
