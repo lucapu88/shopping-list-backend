@@ -10,7 +10,7 @@ const app = express();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const PLAN_LABELS = {
-    [process.env.STRIPE_PRICE_100]: { generazioni: 100, label: 'Piano Starter - €1' },
+    [process.env.STRIPE_PRICE_100]: { generazioni: 60, label: 'Piano Starter - €1' },
     [process.env.STRIPE_PRICE_200]: { generazioni: 200, label: 'Piano Chef - €2' },
     [process.env.STRIPE_PRICE_600]: { generazioni: 600, label: 'Piano Gourmet - €5' },
 };
