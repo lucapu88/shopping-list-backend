@@ -19,7 +19,15 @@ app.use(corsConfig);
 app.use('/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
 
-app.post('/generate-recipe', generateRecipe);
+app.post('/generate-recipe', async (req, res) => {
+    const { token } = req.body;
+    if (!token) return res.status(403).json({ error: 'Token mancante' });
+
+    const result = await useGenerazione(token);
+    if (!result.success) return res.status(403).json({ error: 'Nessuna generazione disponibile' });
+
+    return generateRecipe(req, res);
+});
 
 //Route Stripe 
 app.post('/create-checkout-session', async (req, res) => {
