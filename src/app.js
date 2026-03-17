@@ -85,4 +85,27 @@ app.post('/usa-generazione', async (req, res) => {
     }
 });
 
+app.post('/migra-generazioni', async (req, res) => {
+    const { localToken, uid } = req.body;
+    if (!localToken || !uid) return res.status(400).json({ error: 'Dati mancanti' });
+
+    try {
+        const localUser = await ensureUser(localToken);
+        const firebaseUser = await ensureUser(uid);
+        const totale = localUser.generazioni + firebaseUser.generazioni;
+
+        if (totale > 0) {
+            await supabase
+                .from('users')
+                .update({ generazioni: totale })
+                .eq('token', uid);
+        }
+        await supabase.from('users').update({ generazioni: 0 }).eq('token', localToken);
+
+        res.json({ success: true, generazioni: totale });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 export default app;
