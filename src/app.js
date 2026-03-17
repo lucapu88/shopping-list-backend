@@ -72,40 +72,6 @@ app.get('/generazioni', async (req, res) => {
     res.json({ generazioni: user.generazioni });
 });
 
-app.post('/usa-generazione', async (req, res) => {
-    const { token } = req.body;
-    if (!token) return res.status(400).json({ error: 'token mancante' });
-    try {
-        const result = await useGenerazione(token);
-        if (!result.success) return res.status(403).json({ error: 'Nessuna generazione disponibile', generazioni: 0 });
-        res.json({ success: true, generazioni: result.generazioni });
-    } catch (err) {
-        console.error('Errore /usa-generazione:', err.message);
-        res.status(500).json({ error: err.message });
-    }
-});
 
-app.post('/migra-generazioni', async (req, res) => {
-    const { localToken, uid } = req.body;
-    if (!localToken || !uid) return res.status(400).json({ error: 'Dati mancanti' });
-
-    try {
-        const localUser = await ensureUser(localToken);
-        const firebaseUser = await ensureUser(uid);
-        const totale = localUser.generazioni + firebaseUser.generazioni;
-
-        if (totale > 0) {
-            await supabase
-                .from('users')
-                .update({ generazioni: totale })
-                .eq('token', uid);
-        }
-        await supabase.from('users').update({ generazioni: 0 }).eq('token', localToken);
-
-        res.json({ success: true, generazioni: totale });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
 
 export default app;
